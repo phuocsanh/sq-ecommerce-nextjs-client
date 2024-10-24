@@ -1,3 +1,4 @@
+"use client";
 import { Suspense } from "react";
 import BtnLogin from "./components/BtnLogin";
 export default function Home() {

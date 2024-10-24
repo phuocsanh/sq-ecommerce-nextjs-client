@@ -1,19 +1,18 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import React, { useState } from "react";
-import { login } from "../actions";
+import React from "react";
+import { useLoginMutation } from "@/tanstack-queries/use-auth";
 
 function BtnLogin() {
-  const [loading, setLoading] = useState(false);
-  const loginUser = async () => {
-    setLoading(true);
-    const res = await login();
-    setLoading(false);
-    console.log("Login successful:", res.data);
-  };
+  const loginUser = useLoginMutation();
   return (
-    <Button onClick={loginUser} title="Click">
-      Click {loading ? "Loading" : ""}
+    <Button
+      onClick={() => {
+        loginUser.mutateAsync();
+      }}
+      title="Click"
+    >
+      Click
     </Button>
   );
 }
