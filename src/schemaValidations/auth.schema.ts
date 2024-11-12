@@ -5,8 +5,11 @@ export const RegisterBody = z
   .object({
     name: z.string().trim().min(2).max(256),
     email: z.string().email(),
-    password: z.string().min(6).max(100),
-    confirmPassword: z.string().min(6).max(100),
+    password: z.string().min(8, "Tối thiểu 8 kí tự").max(20, "Tối đa 20 kí tự"),
+    confirmPassword: z
+      .string()
+      .min(8, "Tối thiểu 8 kí tự")
+      .max(20, "Tối đa 20 kí tự"),
   })
   .strict()
   .superRefine(({ confirmPassword, password }, ctx) => {

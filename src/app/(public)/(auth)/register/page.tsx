@@ -13,8 +13,7 @@ export default function Register() {
         />
       </div>
       <div className="right-0 absolute w-[30%] flex h-full bg-bg_cyan items-center justify-center">
-        <div className="bg-white w-[80%] px-6 py-6 rounded-lg">
-          <h1 className="text-center font-bold text-lg">Đăng kí</h1>
+        <div className="bg-white w-[80%] px-6 py-6 rounded-lg shadow-lg">
           <RegisterForm />
         </div>
       </div>
