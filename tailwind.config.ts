@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-const { fontFamily } = require("tailwindcss/defaultTheme");
+import { fontFamily } from "tailwindcss/defaultTheme";
 const config: Config = {
   darkMode: ["class"],
   content: [
@@ -29,6 +29,9 @@ const config: Config = {
         very_drak_blue: {
           DEFAULT: "var(--very-drak-blue)",
         },
+        bg_cyan: {
+          DEFAULT: "var(--bg-cyan)",
+        },
         border: "var(--border)",
         input: "var(--input)",
       },
@@ -39,6 +42,7 @@ const config: Config = {
       },
     },
   },
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   plugins: [require("tailwindcss-animate")],
 };
 export default config;
