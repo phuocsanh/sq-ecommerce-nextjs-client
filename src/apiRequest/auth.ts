@@ -2,7 +2,7 @@ import http from "@/lib/http";
 import {
   LoginBodyType,
   LoginResType,
-  RegisterBodyType,
+  RegisterEmailType,
   RegisterResType,
 } from "@/schemaValidations/auth.schema";
 
@@ -12,7 +12,9 @@ const authApiRequest = {
     http.post<LoginResType>("api/auth/login", body, {
       baseUrl: "",
     }),
-  register: (body: RegisterBodyType) =>
-    http.post<RegisterResType>("api/auth/register", body),
+  registerEmail: (body: RegisterEmailType) => {
+    console.log("🚀 ~ body:", body);
+    return http.post<RegisterResType>("api/v1/user/register", body);
+  },
 };
 export default authApiRequest;

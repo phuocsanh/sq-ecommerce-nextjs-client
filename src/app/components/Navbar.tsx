@@ -20,15 +20,19 @@ export default function Navbar() {
             Trang Chủ
           </Link>
         </div>
-        <div className="flex items-center space-x-2 bg-white w-[50%] rounded-sm  border focus-within:border-soft_cyan">
-          <input
-            className="w-full p-2 rounded border-none bg-white"
-            placeholder="Tìm kiếm..."
-          />
-          <button className="h-full cursor-pointer  flex items-center justify-center p-2">
-            <BsSearch className="w-10 text-lg text-gray-600 " />
-          </button>
-        </div>
+
+        {pathname === "/" && (
+          <div className="flex items-center space-x-2 bg-white w-[50%] rounded-sm  border focus-within:border-soft_cyan">
+            <input
+              className="w-full p-2 rounded border-none bg-white"
+              placeholder="Tìm kiếm..."
+            />
+            <button className="h-full cursor-pointer  flex items-center justify-center p-2">
+              <BsSearch className="w-10 text-lg text-gray-600 " />
+            </button>
+          </div>
+        )}
+
         {/* Menu responsive */}
         <div className="flex items-center space-x-4">
           <Link

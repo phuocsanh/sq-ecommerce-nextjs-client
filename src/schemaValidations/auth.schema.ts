@@ -1,10 +1,17 @@
 import { RoleValues } from "@/models/common";
 import z from "zod";
 
-export const RegisterBody = z
+export const RegisterEmail = z.object({
+  verify_key: z
+    .string()
+    .min(1, "Email là bắt buộc")
+    .email("Email sai định dạng"),
+  verify_purpose: z.string(),
+  verify_type: z.number(),
+});
+
+export const RegisterPassword = z
   .object({
-    name: z.string().trim().min(2).max(256),
-    email: z.string().email(),
     password: z.string().min(8, "Tối thiểu 8 kí tự").max(20, "Tối đa 20 kí tự"),
     confirmPassword: z
       .string()
@@ -22,7 +29,8 @@ export const RegisterBody = z
     }
   });
 
-export type RegisterBodyType = z.TypeOf<typeof RegisterBody>;
+export type RegisterPasswordType = z.TypeOf<typeof RegisterPassword>;
+export type RegisterEmailType = z.TypeOf<typeof RegisterEmail>;
 
 export const RegisterRes = z.object({
   data: z.object({

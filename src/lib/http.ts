@@ -92,6 +92,7 @@ const request = async <Response>(
     options?.baseUrl === undefined
       ? envConfig.NEXT_PUBLIC_API_ENDPOINT
       : options.baseUrl;
+  console.log("🚀 ~ baseUrl:", baseUrl);
 
   const fullUrl = `${baseUrl}/${normalizePath(url)}`;
 
