@@ -1,9 +1,11 @@
 import http from "@/lib/http";
+import { ResponseData } from "@/models/common";
 import {
   LoginBodyType,
   LoginResType,
   RegisterEmailType,
   RegisterResType,
+  RegisterVerifyOTPType,
 } from "@/schemaValidations/auth.schema";
 
 const authApiRequest = {
@@ -13,8 +15,10 @@ const authApiRequest = {
       baseUrl: "",
     }),
   registerEmail: (body: RegisterEmailType) => {
-    console.log("🚀 ~ body:", body);
-    return http.post<RegisterResType>("api/v1/user/register", body);
+    return http.post<ResponseData<null>>("api/v1/user/register1", body);
+  },
+  verifyOTP: (body: RegisterVerifyOTPType) => {
+    return http.post<ResponseData<null>>("api/v1/user/verify_account", body);
   },
 };
 export default authApiRequest;

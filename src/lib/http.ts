@@ -19,41 +19,37 @@ type EntityErrorPayload = {
 };
 
 export class HttpError extends Error {
-  status: number;
-  payload: {
-    message: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [key: string]: any;
-  };
+  code: number;
+  data: any;
   constructor({
-    status,
-    payload,
+    code,
+    data,
     message = "Lỗi HTTP",
   }: {
-    status: number;
+    code: number;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    payload: any;
+    data: any;
     message?: string;
   }) {
     super(message);
-    this.status = status;
-    this.payload = payload;
+    this.code = code;
+    this.data = data;
   }
 }
 
 export class EntityError extends HttpError {
-  status: typeof ENTITY_ERROR_STATUS;
-  payload: EntityErrorPayload;
+  code: typeof ENTITY_ERROR_STATUS;
+  data: EntityErrorPayload;
   constructor({
-    status,
-    payload,
+    code,
+    data,
   }: {
-    status: typeof ENTITY_ERROR_STATUS;
-    payload: EntityErrorPayload;
+    code: typeof ENTITY_ERROR_STATUS;
+    data: EntityErrorPayload;
   }) {
-    super({ status, payload, message: "Lỗi thực thể" });
-    this.status = status;
-    this.payload = payload;
+    super({ code, data, message: "Lỗi thực thể" });
+    this.code = code;
+    this.data = data;
   }
 }
 
@@ -106,17 +102,17 @@ const request = async <Response>(
     method,
   });
   const payload: Response = await res.json();
-  const data = {
-    status: res.status,
-    payload,
+  const newData = {
+    code: res.status,
+    data: payload,
   };
   // Interceptor là nời chúng ta xử lý request và response trước khi trả về cho phía component
   if (!res.ok) {
     if (res.status === ENTITY_ERROR_STATUS) {
       throw new EntityError(
-        data as {
-          status: typeof ENTITY_ERROR_STATUS;
-          payload: EntityErrorPayload;
+        newData as {
+          code: typeof ENTITY_ERROR_STATUS;
+          data: EntityErrorPayload;
         }
       );
     } else if (res.status === AUTHENTICATION_ERROR_STATUS) {
@@ -150,7 +146,7 @@ const request = async <Response>(
         redirect(`/logout?accessToken=${accessToken}`);
       }
     } else {
-      throw new HttpError(data);
+      throw new HttpError(newData);
     }
   }
   // Đảm bảo logic dưới đây chỉ chạy ở phía client (browser)
@@ -165,7 +161,7 @@ const request = async <Response>(
       localStorage.removeItem("refreshToken");
     }
   }
-  return data;
+  return newData;
 };
 
 const http = {

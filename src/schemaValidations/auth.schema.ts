@@ -1,5 +1,9 @@
 import { RoleValues } from "@/models/common";
 import z from "zod";
+export const RegisterVerifyOTP = z.object({
+  verify_code: z.string(),
+  verify_key: z.string(),
+});
 
 export const RegisterEmail = z.object({
   verify_key: z
@@ -29,6 +33,7 @@ export const RegisterPassword = z
     }
   });
 
+export type RegisterVerifyOTPType = z.TypeOf<typeof RegisterVerifyOTP>;
 export type RegisterPasswordType = z.TypeOf<typeof RegisterPassword>;
 export type RegisterEmailType = z.TypeOf<typeof RegisterEmail>;
 

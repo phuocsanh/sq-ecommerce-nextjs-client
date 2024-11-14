@@ -33,7 +33,7 @@ export const handleErrorApi = ({
   } else {
     toast({
       title: "Lỗi",
-      description: error?.payload?.message ?? "Lỗi không xác định",
+      description: error ?? "Lỗi không xác định",
       variant: "destructive",
       duration: duration ?? 5000,
     });

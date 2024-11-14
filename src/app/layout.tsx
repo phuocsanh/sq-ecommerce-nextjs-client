@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import AppProviderTanStack from "@/provider/app-provider-tanstack";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/toaster";
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -27,6 +28,7 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
+        <Toaster />
         <AppProviderTanStack>
           <ThemeProvider>{children}</ThemeProvider>
         </AppProviderTanStack>
