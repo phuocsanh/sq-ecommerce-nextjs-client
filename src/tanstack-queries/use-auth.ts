@@ -5,10 +5,28 @@ import {
 } from "@/models/auth";
 import { ResponseData } from "@/models/common";
 import {
-  RegisterPasswordType,
+  LoginBodyType,
   RegisterVerifyOTPType,
 } from "@/schemaValidations/auth.schema";
 import { useMutation } from "@tanstack/react-query";
+
+export const useLoginMutation = () => {
+  return useMutation<ResponseData<UpdatePassType>, Error, LoginBodyType>({
+    mutationFn: async (data) => {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        throw response;
+      }
+      return response.json(); //
+    },
+  });
+};
 
 export const useUpdatePassRegisterMutation = () => {
   return useMutation<ResponseData<UpdatePassType>, Error, UpdatePassBodyType>({

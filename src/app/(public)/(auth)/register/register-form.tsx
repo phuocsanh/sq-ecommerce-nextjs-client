@@ -248,7 +248,6 @@ function CreatePass({
         password: values.password,
         user_token: token,
       });
-      console.log("🚀 ~ onSubmit CreatePass ~ result:", result);
       if (API_CODE.SUCCESS === result.code) {
         setStep(3);
       } else {
@@ -264,9 +263,6 @@ function CreatePass({
   }
   return (
     <div>
-      <button className="self-start" onClick={() => setStep(undefined)}>
-        <MdArrowBack size={25} />
-      </button>
       <p className="text-lg text-center font-bold">Tạo mật khẩu</p>
       <Form {...form}>
         <form
@@ -334,8 +330,8 @@ function SuccessRegister() {
       >
         {/* <Controls visible={true} buttons={["repeat"]} /> */}
       </Player>
-      <p className="mt-5 font-light">
-        Chúc mừng bạn đã đăng kí tài khoản thành công
+      <p className="mt-5 font-light text-center">
+        Chúc mừng bạn đã đăng kí tài khoản thành công!
       </p>
       <Link className="w-full" href={"/login"}>
         <Button className="mt-10 w-full text-white cursor-pointer ">
