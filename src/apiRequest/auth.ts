@@ -1,10 +1,14 @@
 import http from "@/lib/http";
+import {
+  UpdatePassBodyType,
+  UpdatePassType,
+  VerifyOTPType,
+} from "@/models/auth";
 import { ResponseData } from "@/models/common";
 import {
   LoginBodyType,
   LoginResType,
   RegisterEmailType,
-  RegisterResType,
   RegisterVerifyOTPType,
 } from "@/schemaValidations/auth.schema";
 
@@ -15,10 +19,19 @@ const authApiRequest = {
       baseUrl: "",
     }),
   registerEmail: (body: RegisterEmailType) => {
-    return http.post<ResponseData<null>>("api/v1/user/register1", body);
+    return http.post<ResponseData<null>>("api/v1/user/register", body);
   },
   verifyOTP: (body: RegisterVerifyOTPType) => {
-    return http.post<ResponseData<null>>("api/v1/user/verify_account", body);
+    return http.post<ResponseData<VerifyOTPType>>(
+      "api/v1/user/verify_account",
+      body
+    );
+  },
+  updatePassRegister: (body: UpdatePassBodyType) => {
+    return http.post<ResponseData<UpdatePassType>>(
+      "api/v1/user/update_pass_register",
+      body
+    );
   },
 };
 export default authApiRequest;

@@ -29,25 +29,24 @@ import {
   RegisterVerifyOTP,
   RegisterVerifyOTPType,
 } from "@/schemaValidations/auth.schema";
-import { useRouter } from "next/navigation";
-import { handleErrorApi } from "@/lib/utils";
+import { handleErrorApi, isServerResponseError } from "@/lib/utils";
 import { useState } from "react";
-import authApiRequest from "@/apiRequest/auth";
-import { Player, Controls } from "@lottiefiles/react-lottie-player";
+import { Player } from "@lottiefiles/react-lottie-player";
 import Link from "next/link";
 import {
   useRegisterEmailMutation,
+  useUpdatePassRegisterMutation,
   useVerifyOTPMutation,
 } from "@/tanstack-queries/use-auth";
 import LoadingSpinner from "@/app/components/LoadingSpinner/LoadingSpinner";
 import { API_CODE } from "@/models/common";
-import { toast } from "@/hooks/use-toast";
 type Steps = 1 | 2 | 3 | undefined;
 
 const RegisterForm = () => {
   const [step, setStep] = useState<Steps>(undefined);
   const [email, setEmail] = useState<string>("");
-  const router = useRouter();
+  const [token, setToken] = useState<string>("");
+
   const registerEmailMutation = useRegisterEmailMutation();
   const form = useForm<RegisterEmailType>({
     resolver: zodResolver(RegisterEmail),
@@ -60,28 +59,24 @@ const RegisterForm = () => {
 
   // 2. Define a submit handler.
   async function onSubmitEmail(values: RegisterEmailType) {
-    if (registerEmailMutation.isPending) return;
     try {
+      if (registerEmailMutation.isPending) return;
       const result = await registerEmailMutation.mutateAsync({
         verify_key: values.verify_key || "",
         verify_purpose: values.verify_purpose,
         verify_type: values.verify_type,
       });
-      console.log("🚀 ~ onSubmitEmail ~ result:", result);
       if (API_CODE.SUCCESS === result.code) {
         setEmail(values.verify_key);
         setStep(1);
       } else {
         handleErrorApi({
           error: result.message || "Lỗi không xác định ",
-          setError: form.setError,
         });
       }
-    } catch (error: any) {
-      console.log("🚀 ~ onSubmitEmail ~ error:", error);
+    } catch (error) {
       handleErrorApi({
-        error,
-        setError: form.setError,
+        error: isServerResponseError(error) ? error.statusText : null,
       });
     }
   }
@@ -120,9 +115,9 @@ const RegisterForm = () => {
           </Form>
         </div>
       ) : step === 1 ? (
-        <InputOTPPattern setStep={setStep} email={email} />
+        <InputOTPPattern setStep={setStep} email={email} setToken={setToken} />
       ) : step === 2 ? (
-        <CreatePass setStep={setStep} />
+        <CreatePass setStep={setStep} token={token} />
       ) : (
         <SuccessRegister />
       )}
@@ -131,9 +126,11 @@ const RegisterForm = () => {
 };
 
 function InputOTPPattern({
+  setToken,
   setStep,
   email = "",
 }: {
+  setToken: (token: string) => void;
   setStep: (step: Steps) => void;
   email: string;
 }) {
@@ -153,9 +150,10 @@ function InputOTPPattern({
         verify_code: values.verify_code,
         verify_key: values.verify_key,
       });
-      console.log("🚀 ~ onSubmitOTP ~ result:", result.message);
+      console.log("🚀 ~ onSubmitOTP ~ result:", result);
 
-      if (API_CODE.SUCCESS === result.code) {
+      if (API_CODE.SUCCESS === result.code && result.data.token) {
+        setToken(result.data.token);
         setStep(2);
       } else {
         handleErrorApi({
@@ -165,8 +163,7 @@ function InputOTPPattern({
       }
     } catch (error: any) {
       handleErrorApi({
-        error,
-        setError: form.setError,
+        error: isServerResponseError(error) ? error.statusText : null,
       });
     }
   }
@@ -227,7 +224,15 @@ function InputOTPPattern({
   );
 }
 
-function CreatePass({ setStep }: { setStep: (step: Steps) => void }) {
+function CreatePass({
+  setStep,
+  token,
+}: {
+  setStep: (step: Steps) => void;
+  token: string;
+}) {
+  const updatePassRegisterMutation = useUpdatePassRegisterMutation();
+
   const form = useForm<RegisterPasswordType>({
     resolver: zodResolver(RegisterPassword),
     defaultValues: {
@@ -237,8 +242,25 @@ function CreatePass({ setStep }: { setStep: (step: Steps) => void }) {
   });
 
   async function onSubmit(values: RegisterPasswordType) {
-    console.log("🚀 ~ onSubmit ~ values:", values);
-    setStep(3);
+    try {
+      if (updatePassRegisterMutation.isPending) return;
+      const result = await updatePassRegisterMutation.mutateAsync({
+        password: values.password,
+        user_token: token,
+      });
+      console.log("🚀 ~ onSubmit CreatePass ~ result:", result);
+      if (API_CODE.SUCCESS === result.code) {
+        setStep(3);
+      } else {
+        handleErrorApi({
+          error: result.message || "Lỗi không xác định ",
+        });
+      }
+    } catch (error) {
+      handleErrorApi({
+        error: isServerResponseError(error) ? error.statusText : null,
+      });
+    }
   }
   return (
     <div>
@@ -292,14 +314,8 @@ function CreatePass({ setStep }: { setStep: (step: Steps) => void }) {
               </FormItem>
             )}
           />
-          <Button
-            type="submit"
-            className="!mt-8 w-full text-white"
-            onClick={() => {
-              setStep(3);
-            }}
-          >
-            Tiếp theo
+          <Button type="submit" className="!mt-8 w-full text-white">
+            Xác nhận
           </Button>
         </form>
       </Form>
@@ -321,9 +337,11 @@ function SuccessRegister() {
       <p className="mt-5 font-light">
         Chúc mừng bạn đã đăng kí tài khoản thành công
       </p>
-      <Button className="mt-10 text-white cursor-pointer">
-        <Link href={"/login"}>Go to Login</Link>
-      </Button>
+      <Link className="w-full" href={"/login"}>
+        <Button className="mt-10 w-full text-white cursor-pointer ">
+          Go to Login
+        </Button>
+      </Link>
     </div>
   );
 }

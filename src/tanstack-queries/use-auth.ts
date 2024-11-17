@@ -1,11 +1,19 @@
+import {
+  UpdatePassBodyType,
+  UpdatePassType,
+  VerifyOTPType,
+} from "@/models/auth";
 import { ResponseData } from "@/models/common";
-import { RegisterVerifyOTPType } from "@/schemaValidations/auth.schema";
+import {
+  RegisterPasswordType,
+  RegisterVerifyOTPType,
+} from "@/schemaValidations/auth.schema";
 import { useMutation } from "@tanstack/react-query";
 
-export const useVerifyOTPMutation = () => {
-  return useMutation({
-    mutationFn: async (data: RegisterVerifyOTPType) => {
-      const response = await fetch("/api/auth/register/verifyOTP", {
+export const useUpdatePassRegisterMutation = () => {
+  return useMutation<ResponseData<UpdatePassType>, Error, UpdatePassBodyType>({
+    mutationFn: async (data) => {
+      const response = await fetch("/api/auth/register/update-pass", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -13,20 +21,39 @@ export const useVerifyOTPMutation = () => {
         body: JSON.stringify(data),
       });
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Có lỗi xảy ra.");
+        throw response;
       }
-      return response.json();
+      return response.json(); //
     },
   });
 };
+export const useVerifyOTPMutation = () => {
+  return useMutation<ResponseData<VerifyOTPType>, Error, RegisterVerifyOTPType>(
+    {
+      mutationFn: async (data) => {
+        const response = await fetch("/api/auth/register/verify-otp", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+        if (!response.ok) {
+          throw response;
+        }
+        return response.json(); //
+      },
+    }
+  );
+};
+
 export const useRegisterEmailMutation = () => {
-  return useMutation({
-    mutationFn: async (data: {
-      verify_key: string;
-      verify_purpose: string;
-      verify_type: number;
-    }) => {
+  return useMutation<
+    ResponseData<null>,
+    Error,
+    { verify_key: string; verify_purpose: string; verify_type: number }
+  >({
+    mutationFn: async (data) => {
       const response = await fetch("/api/auth/register/email", {
         method: "POST",
         headers: {
@@ -34,12 +61,15 @@ export const useRegisterEmailMutation = () => {
         },
         body: JSON.stringify(data),
       });
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Có lỗi xảy ra.");
+        throw response;
       }
 
-      return response.json();
+      return response.json(); // TypeScript sẽ hiểu kết quả trả về có kiểu RegisterEmailResponse
+    },
+    onError: (error) => {
+      // Xử lý lỗi ở đây, ví dụ: hiển thị thông báo lỗi cho người dùng
     },
   });
 };

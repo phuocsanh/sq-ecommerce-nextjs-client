@@ -3,6 +3,7 @@ import { UseFormSetError } from "react-hook-form";
 import { twMerge } from "tailwind-merge";
 import { EntityError } from "./http";
 import { toast } from "@/hooks/use-toast";
+import { ApiResponseError } from "@/models/common";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -24,7 +25,7 @@ export const handleErrorApi = ({
   duration?: number;
 }) => {
   if (error instanceof EntityError && setError) {
-    error.payload.errors.forEach((item) => {
+    error.data.errors.forEach((item) => {
       setError(item.field, {
         type: "server",
         message: item.message,
@@ -38,4 +39,18 @@ export const handleErrorApi = ({
       duration: duration ?? 5000,
     });
   }
+};
+
+export const isServerResponseError = (
+  err: unknown
+): err is ApiResponseError => {
+  if (
+    err &&
+    typeof err === "object" &&
+    "statusText" in err &&
+    "status" in err
+  ) {
+    return true;
+  }
+  return false;
 };

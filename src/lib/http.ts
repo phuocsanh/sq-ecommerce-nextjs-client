@@ -20,36 +20,43 @@ type EntityErrorPayload = {
 
 export class HttpError extends Error {
   code: number;
-  data: any;
+  data: {
+    [key: string]: any;
+  };
+  message: string;
   constructor({
     code,
     data,
-    message = "Lỗi HTTP",
+    message,
   }: {
     code: number;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: any;
-    message?: string;
+    message: string;
   }) {
-    super(message);
+    super("Http Error");
     this.code = code;
     this.data = data;
+    this.message = message;
   }
 }
 
 export class EntityError extends HttpError {
-  code: typeof ENTITY_ERROR_STATUS;
+  code: 422;
   data: EntityErrorPayload;
+  message: string;
   constructor({
     code,
     data,
+    message,
   }: {
-    code: typeof ENTITY_ERROR_STATUS;
+    code: 422;
     data: EntityErrorPayload;
+    message: string;
   }) {
-    super({ code, data, message: "Lỗi thực thể" });
+    super({ code, data, message });
     this.code = code;
     this.data = data;
+    this.message = message;
   }
 }
 
@@ -88,7 +95,6 @@ const request = async <Response>(
     options?.baseUrl === undefined
       ? envConfig.NEXT_PUBLIC_API_ENDPOINT
       : options.baseUrl;
-  console.log("🚀 ~ baseUrl:", baseUrl);
 
   const fullUrl = `${baseUrl}/${normalizePath(url)}`;
 
@@ -101,21 +107,33 @@ const request = async <Response>(
     body,
     method,
   });
-  const payload: Response = await res.json();
-  const newData = {
-    code: res.status,
-    data: payload,
-  };
+
+  let payload: Response;
+
   // Interceptor là nời chúng ta xử lý request và response trước khi trả về cho phía component
   if (!res.ok) {
-    if (res.status === ENTITY_ERROR_STATUS) {
-      throw new EntityError(
-        newData as {
-          code: typeof ENTITY_ERROR_STATUS;
-          data: EntityErrorPayload;
-        }
-      );
-    } else if (res.status === AUTHENTICATION_ERROR_STATUS) {
+    // console.log("🚀 ~ else vào đây 105:");
+
+    // if (res.status === ENTITY_ERROR_STATUS) {
+    //   try {
+    //     payload = await res.json();
+    //   } catch (error) {
+    //     throw error;
+    //   }
+    //   const newData = {
+    //     code: res.status,
+    //     data: payload,
+    //     message: res.statusText,
+    //   };
+    //   throw new EntityError(
+    //     newData as {
+    //       code: typeof ENTITY_ERROR_STATUS;
+    //       data: EntityErrorPayload;
+    //       message: string;
+    //     }
+    //   );
+    // }
+    if (res.status === AUTHENTICATION_ERROR_STATUS) {
       if (isClient) {
         if (!clientLogoutRequest) {
           clientLogoutRequest = fetch("/api/auth/logout", {
@@ -146,10 +164,20 @@ const request = async <Response>(
         redirect(`/logout?accessToken=${accessToken}`);
       }
     } else {
-      throw new HttpError(newData);
+      throw new HttpError({
+        code: res.status,
+        data: null,
+        message: res.statusText,
+      });
     }
   }
   // Đảm bảo logic dưới đây chỉ chạy ở phía client (browser)
+
+  try {
+    payload = await res.json();
+  } catch (error) {
+    throw error;
+  }
   if (isClient) {
     const normalizeUrl = normalizePath(url);
     if (normalizeUrl === "api/auth/login") {
@@ -161,7 +189,7 @@ const request = async <Response>(
       localStorage.removeItem("refreshToken");
     }
   }
-  return newData;
+  return payload;
 };
 
 const http = {

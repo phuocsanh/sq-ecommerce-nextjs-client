@@ -16,3 +16,7 @@ export type ApiResponse = {
 export type ResponseData<D> = ApiResponse & {
   data: D;
 };
+export type ApiResponseError = {
+  status: number;
+  statusText: string;
+};

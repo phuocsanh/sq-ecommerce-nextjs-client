@@ -1,17 +1,16 @@
 import authApiRequest from "@/apiRequest/auth";
 import { HttpError } from "@/lib/http";
-import { RegisterEmailType } from "@/schemaValidations/auth.schema";
+import { RegisterVerifyOTPType } from "@/schemaValidations/auth.schema";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-  const body = (await request.json()) as RegisterEmailType;
+  const body = (await request.json()) as RegisterVerifyOTPType;
   try {
-    const res = await authApiRequest.registerEmail(body);
+    const res = await authApiRequest.verifyOTP(body);
 
     return Response.json(res);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
-    // Kiểm tra lỗi kiểu HttpError
     if (e instanceof HttpError) {
       return NextResponse.json(
         {

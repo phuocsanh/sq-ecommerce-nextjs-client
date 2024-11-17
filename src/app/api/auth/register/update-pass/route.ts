@@ -1,12 +1,13 @@
 import authApiRequest from "@/apiRequest/auth";
 import { HttpError } from "@/lib/http";
-import { RegisterEmailType } from "@/schemaValidations/auth.schema";
+import { UpdatePassBodyType } from "@/models/auth";
+import { RegisterPasswordType } from "@/schemaValidations/auth.schema";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-  const body = (await request.json()) as RegisterEmailType;
+  const body = (await request.json()) as UpdatePassBodyType;
   try {
-    const res = await authApiRequest.registerEmail(body);
+    const res = await authApiRequest.updatePassRegister(body);
 
     return Response.json(res);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
