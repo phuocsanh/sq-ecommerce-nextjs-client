@@ -1,3 +1,4 @@
+import authApiRequest from "@/apiRequest/auth";
 import {
   UpdatePassBodyType,
   UpdatePassType,
@@ -6,25 +7,27 @@ import {
 import { ResponseData } from "@/models/common";
 import {
   LoginBodyType,
+  LoginResType,
   RegisterVerifyOTPType,
 } from "@/schemaValidations/auth.schema";
 import { useMutation } from "@tanstack/react-query";
 
 export const useLoginMutation = () => {
-  return useMutation<ResponseData<UpdatePassType>, Error, LoginBodyType>({
-    mutationFn: async (data) => {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) {
-        throw response;
-      }
-      return response.json(); //
-    },
+  return useMutation({
+    // mutationFn: async (data) => {
+    //   const response = await fetch("/api/auth/login", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(data),
+    //   });
+    //   if (!response.ok) {
+    //     throw response;
+    //   }
+    //   return response.json(); //
+    // },
+    mutationFn: authApiRequest.cLogin,
   });
 };
 

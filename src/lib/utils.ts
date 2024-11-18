@@ -54,3 +54,10 @@ export const isServerResponseError = (
   }
   return false;
 };
+
+export const getAccessTokenFromLocalStorage = () => {
+  return localStorage.getItem("accessToken");
+};
+export const getRefreshTokenFromLocalStorage = () => {
+  return localStorage.getItem("refreshToken");
+};

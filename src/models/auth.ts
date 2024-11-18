@@ -8,5 +8,5 @@ export type UpdatePassType = {
 };
 export type UpdatePassBodyType = {
   user_token: string;
-  password: string;
+  user_password: string;
 };

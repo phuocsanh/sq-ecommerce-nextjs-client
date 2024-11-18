@@ -16,8 +16,7 @@ const authApiRequest = {
   sLogin: (body: LoginBodyType) =>
     http.post<LoginResType>("api/v1/user/login", body),
   cLogin: (body: LoginBodyType) => {
-    console.log("🚀 ~ body:", body);
-    return http.post<LoginResType>("api/v1/user/login", body, {
+    return http.post<LoginResType>("/api/auth/login", body, {
       baseUrl: "",
     });
   },

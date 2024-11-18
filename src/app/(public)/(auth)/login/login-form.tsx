@@ -1,14 +1,5 @@
 "use client";
 
-import { REGEXP_ONLY_DIGITS } from "input-otp";
-
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
-
-import { MdArrowBack } from "react-icons/md";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -23,13 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { LoginBody, LoginBodyType } from "@/schemaValidations/auth.schema";
 import { handleErrorApi, isServerResponseError } from "@/lib/utils";
-import { useState } from "react";
-import { Player } from "@lottiefiles/react-lottie-player";
-import Link from "next/link";
-import {
-  useLoginMutation,
-  useUpdatePassRegisterMutation,
-} from "@/tanstack-queries/use-auth";
+import { useLoginMutation } from "@/tanstack-queries/use-auth";
 import LoadingSpinner from "@/app/components/LoadingSpinner/LoadingSpinner";
 import { API_CODE } from "@/models/common";
 
@@ -50,6 +35,8 @@ const LoginForm = () => {
       user_password: values.user_password,
     });
     console.log("🚀 ~ onSubmit ~ res:", res);
+    if (res.data?.accessToken) {
+    }
     try {
     } catch (error) {
       handleErrorApi({

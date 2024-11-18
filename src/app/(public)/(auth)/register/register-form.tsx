@@ -245,7 +245,7 @@ function CreatePass({
     try {
       if (updatePassRegisterMutation.isPending) return;
       const result = await updatePassRegisterMutation.mutateAsync({
-        password: values.password,
+        user_password: values.password,
         user_token: token,
       });
       if (API_CODE.SUCCESS === result.code) {

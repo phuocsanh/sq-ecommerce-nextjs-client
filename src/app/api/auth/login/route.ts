@@ -9,10 +9,10 @@ export async function POST(request: Request) {
   const cookieStore = cookies();
   try {
     const res = await authApiRequest.sLogin(body);
-    console.log("🚀 ~ POST ~ res 12:", res);
     if (res.data?.accessToken && res.data?.refreshToken) {
       const { accessToken, refreshToken } = res.data;
       const decodeAccessToken = jwt.decode(accessToken) as { exp: number };
+      console.log("🚀 ~ POST ~ decodeAccessToken:", decodeAccessToken);
       const decodeRefreshToken = jwt.decode(refreshToken) as { exp: number };
       cookieStore.set("accessToken", accessToken, {
         path: "/",
