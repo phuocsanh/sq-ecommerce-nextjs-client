@@ -7,6 +7,7 @@ export async function POST() {
   const cookieStore = cookies();
 
   const refreshToken = cookieStore.get("refreshToken")?.value;
+  console.log("🚀 ~ POST ~ refreshToken:", refreshToken);
 
   if (!refreshToken) {
     return NextResponse.json(
@@ -31,7 +32,6 @@ export async function POST() {
         },
       }
     );
-    console.log("🚀 ~ POST ~ response:", response);
 
     if (!response.ok) {
       return NextResponse.json(
@@ -43,8 +43,9 @@ export async function POST() {
         { status: 500 }
       );
     }
-
-    return Response.json(response);
+    const responseData = await response.json();
+    console.log("🚀 ~ POST ~ responseData:", responseData);
+    return Response.json(responseData);
   } catch (e) {
     console.log("🚀 ~ POST ~ e:", e);
     if (e instanceof HttpError) {
