@@ -5,13 +5,31 @@ import {
   VerifyOTPType,
 } from "@/models/auth";
 import { ResponseData } from "@/models/common";
-import {
-  LoginBodyType,
-  LoginResType,
-  RegisterVerifyOTPType,
-} from "@/schemaValidations/auth.schema";
+import { RegisterVerifyOTPType } from "@/schemaValidations/auth.schema";
 import { useMutation } from "@tanstack/react-query";
 
+export const useRefreshTokenMutation = () => {
+  return useMutation({
+    mutationFn: async () => {
+      const response = await fetch(
+        "/api/auth/get-access-token-by-refresh-token",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // Gửi cookie tự động (chứa refreshToken)
+        }
+      );
+      console.log("🚀 ~ mutationFn: ~ response:", response);
+
+      if (!response.ok) {
+        throw response;
+      }
+      return response.json(); //
+    },
+  });
+};
 export const useLoginMutation = () => {
   return useMutation({
     // mutationFn: async (data) => {

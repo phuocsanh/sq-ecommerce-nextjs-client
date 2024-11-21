@@ -1,5 +1,6 @@
 "use client";
 
+import { useRefreshTokenMutation } from "@/tanstack-queries/use-auth";
 import { useEffect, useState } from "react";
 
 // import { cookies } from "next/headers";
@@ -7,7 +8,7 @@ import { useEffect, useState } from "react";
 export default function Page() {
   // const cookieStore = cookies();
   // const access = cookieStore.get("accessToken");
-
+  const refreshToken = useRefreshTokenMutation();
   const [accessToken, setAccessToken] = useState<string | null>(null);
 
   useEffect(() => {
@@ -16,5 +17,14 @@ export default function Page() {
     console.log("🚀 ~ access:", token);
     setAccessToken(token);
   }, []);
-  return <div>Home</div>;
+
+  const handle = async () => {
+    const res = await refreshToken.mutateAsync();
+    console.log("🚀 ~ handle ~ res:", res);
+  };
+  return (
+    <div>
+      <button onClick={handle}>refresh Token</button>
+    </div>
+  );
 }

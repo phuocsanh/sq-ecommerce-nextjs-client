@@ -83,8 +83,13 @@ const request = async <Response>(
           "Content-Type": "application/json",
         };
   if (isClient) {
-    const accessToken = localStorage.getItem("accessToken");
-    if (accessToken) {
+    const response = await fetch("/api/auth/get-access-token", {
+      method: "GET",
+      credentials: "include", // Gửi cookies tự động
+    });
+
+    if (response.ok) {
+      const { accessToken } = await response.json();
       baseHeaders.Authorization = `Bearer ${accessToken}`;
     }
   }
@@ -98,7 +103,7 @@ const request = async <Response>(
 
   const fullUrl = `${baseUrl}/${normalizePath(url)}`;
 
-  const res = await fetch(fullUrl, {
+  let res = await fetch(fullUrl, {
     ...options,
     headers: {
       ...baseHeaders,
@@ -134,34 +139,55 @@ const request = async <Response>(
     //   );
     // }
     if (res.status === AUTHENTICATION_ERROR_STATUS) {
-      if (isClient) {
-        if (!clientLogoutRequest) {
-          clientLogoutRequest = fetch("/api/auth/logout", {
-            method: "POST",
-            body: null, // Logout luôn  thành công
-            headers: {
-              ...baseHeaders,
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            },
-          });
-          try {
-            await clientLogoutRequest;
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          } catch (error) {
-          } finally {
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("refreshToken");
-            clientLogoutRequest = null;
-            // Redirect to Login có thể lặp vô hạn nếu gọi api 1 nào đó cẩn accessToken vì nó đã bị xóa
-            location.href = "/login";
-          }
+      const refreshResponse = await fetch(
+        "/api/auth/get-access-token-by-refresh-token",
+        {
+          method: "POST",
         }
+      );
+
+      if (refreshResponse.ok) {
+        const { accessToken } = await refreshResponse.json();
+
+        // Thực hiện lại request ban đầu với accessToken mới
+        baseHeaders.Authorization = `Bearer ${accessToken}`;
+        res = await fetch(fullUrl, {
+          ...options,
+          headers: {
+            ...baseHeaders,
+            ...options?.headers,
+          },
+          body,
+          method,
+        });
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const accessToken = (options?.headers as any)?.Authorization.split(
-          "Bearer "
-        )[1];
-        redirect(`/logout?accessToken=${accessToken}`);
+        if (isClient) {
+          if (!clientLogoutRequest) {
+            clientLogoutRequest = fetch("/api/auth/logout", {
+              method: "POST",
+              body: null, // Logout luôn  thành công
+              headers: {
+                ...baseHeaders,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              },
+            });
+            try {
+              await clientLogoutRequest;
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            } catch (error) {
+            } finally {
+              clientLogoutRequest = null;
+              // Redirect to Login có thể lặp vô hạn nếu gọi api 1 nào đó cẩn accessToken vì nó đã bị xóa
+              location.href = "/login";
+            }
+          }
+        } else {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const accessToken = (options?.headers as any)?.Authorization.split(
+            "Bearer "
+          )[1];
+          redirect(`/logout?accessToken=${accessToken}`);
+        }
       }
     } else {
       throw new HttpError({
@@ -171,24 +197,13 @@ const request = async <Response>(
       });
     }
   }
-  // Đảm bảo logic dưới đây chỉ chạy ở phía client (browser)
 
   try {
     payload = await res.json();
   } catch (error) {
     throw error;
   }
-  if (isClient) {
-    const normalizeUrl = normalizePath(url);
-    if (normalizeUrl === "api/auth/login") {
-      const { accessToken, refreshToken } = (payload as LoginResType).data;
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
-    } else if (normalizeUrl == "api/auth/logout") {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-    }
-  }
+
   return payload;
 };
 
