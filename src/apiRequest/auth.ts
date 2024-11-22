@@ -14,9 +14,9 @@ import {
 
 const authApiRequest = {
   sLogin: (body: LoginBodyType) =>
-    http.post<LoginResType>("api/v1/user/login", body),
+    http.post<ResponseData<LoginResType>>("api/v1/user/login", body),
   cLogin: (body: LoginBodyType) => {
-    return http.post<LoginResType>("/api/auth/login", body, {
+    return http.post<ResponseData<LoginResType>>("/api/auth/login", body, {
       baseUrl: "",
     });
   },

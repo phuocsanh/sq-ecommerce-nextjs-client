@@ -7,87 +7,58 @@ import { useEffect, useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-import {
-  Cloud,
-  CreditCard,
-  Github,
-  Keyboard,
-  LifeBuoy,
-  LogOut,
-  Mail,
-  MessageSquare,
-  Plus,
-  PlusCircle,
-  Settings,
-  User,
-  UserPlus,
-  Users,
-} from "lucide-react";
+import { CreditCard, LifeBuoy, LogOut, Settings, User } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { IoMdHome } from "react-icons/io";
+import { useAuthStore } from "@/stores/useAuthStore";
 export default function Navbar() {
   const pathname = usePathname();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  console.log("🚀 ~ Navbar ~ isAuthenticated:", isAuthenticated);
+
   // Đảm bảo đã gắn DOM trước khi sử dụng useTheme
-  const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [isOpen, setIsOpen] = useState(false);
 
-  const handleBlur = (event: React.FocusEvent) => {
-    // Kiểm tra nếu phần tử mất focus và phần tử nhận focus không phải là dropdown
-    if (!event.currentTarget.contains(event.relatedTarget)) {
-      setIsOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    // Đảm bảo chỉ chạy trên client
-    const token = localStorage.getItem("accessToken");
-    console.log("🚀 ~ access:", token);
-    setAccessToken(token);
-  }, []);
   return (
     <nav className="bg-primary dark:bg-gray-900 shadow-lg">
-      <div className="container mx-auto px-4 py-2 flex justify-between items-center">
+      <div className="container mx-auto px-2 sm:px-4 py-2 flex justify-between items-center">
         {/* Logo và Trang chủ */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-2">
           <Link
             href="/"
-            className="text-lg font-semibold text-primary-foreground text-white"
+            className="text-sm md:text-lg font-semibold text-primary-foreground text-white truncate flex items-center"
           >
-            Trang Chủ
+            <span className="sm:hidden">
+              {/* Thay chữ bằng icon trên mobile */}
+              <IoMdHome size={30} />
+            </span>
+            <span className="hidden sm:block">Trang Chủ</span>
           </Link>
         </div>
 
         {pathname === "/" && (
-          <div className="flex items-center space-x-2 bg-white w-[50%] rounded-sm  border focus-within:border-soft_cyan">
+          <div className="flex items-center space-x-2 bg-white w-[50%] sm:w-[60%] md:w-[50%] rounded-sm border focus-within:border-soft_cyan">
             <input
-              className="w-full p-2 rounded border-none bg-white"
+              className="w-full p-1 sm:p-2 rounded border-none bg-white text-sm"
               placeholder="Tìm kiếm..."
             />
-            <button className="h-full cursor-pointer  flex items-center justify-center p-2">
-              <BsSearch className="w-10 text-lg text-gray-600 " />
+            <button className="h-full cursor-pointer flex items-center justify-center p-1 sm:p-2">
+              <BsSearch className="w-5 sm:w-6 text-lg text-gray-600" />
             </button>
           </div>
         )}
 
         {/* Menu responsive */}
-        {accessToken ? (
-          <div className="flex items-center space-x-4">
+        {isAuthenticated ? (
+          <div className="flex items-center space-x-2 sm:space-x-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                {/* <Button variant="outline">Open</Button>
-                 */}
                 <Avatar>
                   <AvatarImage
                     src="https://github.com/shadcn.png"
@@ -96,8 +67,7 @@ export default function Navbar() {
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56 bg-white">
-                {/* <DropdownMenuLabel>My Account</DropdownMenuLabel> */}
+              <DropdownMenuContent className="w-48 md:w-56 bg-white">
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <DropdownMenuItem>
@@ -113,39 +83,11 @@ export default function Navbar() {
                     <span>Settings</span>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
-                {/* <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                  <DropdownMenuSub>
-                    <DropdownMenuSubTrigger>
-                      <UserPlus />
-                      <span>Invite users</span>
-                    </DropdownMenuSubTrigger>
-                    <DropdownMenuPortal>
-                      <DropdownMenuSubContent>
-                        <DropdownMenuItem>
-                          <Mail />
-                          <span>Email</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <MessageSquare />
-                          <span>Message</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          <PlusCircle />
-                          <span>More...</span>
-                        </DropdownMenuItem>
-                      </DropdownMenuSubContent>
-                    </DropdownMenuPortal>
-                  </DropdownMenuSub>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator /> */}
-
+                <DropdownMenuSeparator />
                 <DropdownMenuItem>
                   <LifeBuoy />
                   <span>Support</span>
                 </DropdownMenuItem>
-
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
                   <LogOut />
@@ -155,14 +97,14 @@ export default function Navbar() {
             </DropdownMenu>
           </div>
         ) : (
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-1 sm:space-x-4">
             <Link
               href="/register"
               className={` ${
                 pathname === "/register"
-                  ? "text-white font-extrabold"
-                  : "text-white  font-medium"
-              } "px-4 py-2 text-lg rounded-lg transition cursor-pointer "`}
+                  ? "text-white font-bold text-sm sm:text-lg "
+                  : "text-white font-medium text-sm sm:text-lg"
+              } px-1 sm:px-4 py-1 sm:py-2 rounded-lg transition cursor-pointer`}
             >
               Đăng kí
             </Link>
@@ -171,9 +113,9 @@ export default function Navbar() {
               href="/login"
               className={` ${
                 pathname === "/login"
-                  ? "text-white font-extrabold"
-                  : "text-white  font-medium"
-              } "px-4 py-2 text-lg   rounded-lg transition cursor-pointer text-white""`}
+                  ? "text-white font-bold text-sm sm:text-lg"
+                  : "text-white font-medium text-sm sm:text-lg"
+              } px-1  sm:px-4 py-1 sm:py-2 rounded-lg transition cursor-pointer`}
             >
               Đăng nhập
             </Link>

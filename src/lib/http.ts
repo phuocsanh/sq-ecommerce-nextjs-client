@@ -1,6 +1,5 @@
 import envConfig from "@/config";
 import { normalizePath } from "@/lib/utils";
-import { LoginResType } from "@/schemaValidations/auth.schema";
 import { redirect } from "next/navigation";
 
 type CustomOptions = Omit<RequestInit, "method"> & {

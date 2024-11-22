@@ -17,7 +17,6 @@ import { handleErrorApi, isServerResponseError } from "@/lib/utils";
 import { useLoginMutation } from "@/tanstack-queries/use-auth";
 import LoadingSpinner from "@/app/components/LoadingSpinner/LoadingSpinner";
 import { API_CODE } from "@/models/common";
-
 const LoginForm = () => {
   const form = useForm<LoginBodyType>({
     resolver: zodResolver(LoginBody),
@@ -45,13 +44,16 @@ const LoginForm = () => {
     }
   }
   return (
-    <>
-      <div>
-        <p className="text-lg text-center font-bold">Đăng nhập</p>
+    <section className="bg-white w-96 h-96 flex items-center px-10 rounded-sm">
+      <article className="w-full">
+        <header>
+          <h1 className="text-lg text-center font-bold">Đăng nhập</h1>
+        </header>
+
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-2 max-w-[600px] flex-shrink-0 w-full"
+            className="space-y-4 max-w-full flex-shrink-0 w-full"
             noValidate
           >
             <FormField
@@ -59,18 +61,16 @@ const LoginForm = () => {
               name="user_account"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel htmlFor="user_account">Email</FormLabel>
                   <FormControl>
                     <Input
+                      id="user_account"
                       placeholder="Nhập email của bạn"
                       type="email"
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage
-                    content={form.formState.errors.user_account?.message}
-                    className="text-red-600 font-light"
-                  />
+                  <FormMessage className="text-red-600 font-light" />
                 </FormItem>
               )}
             />
@@ -79,18 +79,16 @@ const LoginForm = () => {
               name="user_password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Mật khẩu</FormLabel>
+                  <FormLabel htmlFor="user_password">Mật khẩu</FormLabel>
                   <FormControl>
                     <Input
+                      id="user_password"
                       placeholder="Nhập mật khẩu"
                       type="password"
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage
-                    content={form.formState.errors.user_password?.message}
-                    className="text-red-600 font-light"
-                  />
+                  <FormMessage className="text-red-600 font-light" />
                 </FormItem>
               )}
             />
@@ -99,8 +97,8 @@ const LoginForm = () => {
             </Button>
           </form>
         </Form>
-      </div>
-    </>
+      </article>
+    </section>
   );
 };
 

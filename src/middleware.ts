@@ -6,11 +6,10 @@ const unAuthPath = ["/login"];
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const isAuth = Boolean(request.cookies.get("accessToken")?.value);
-  console.log("🚀 ~ middleware ~ isAuth:", isAuth);
-  if (unAuthPath.some((path) => pathname.startsWith(path)) && isAuth) {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
+  // const isAuth = Boolean(request.cookies.get("accessToken")?.value);
+  // if (unAuthPath.some((path) => pathname.startsWith(path)) && isAuth) {
+  //   return NextResponse.redirect(new URL("/", request.url));
+  // }
   return NextResponse.next();
 }
 

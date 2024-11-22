@@ -5,7 +5,12 @@ import {
   VerifyOTPType,
 } from "@/models/auth";
 import { ResponseData } from "@/models/common";
-import { RegisterVerifyOTPType } from "@/schemaValidations/auth.schema";
+import {
+  LoginBodyType,
+  LoginResType,
+  RegisterVerifyOTPType,
+} from "@/schemaValidations/auth.schema";
+import { useAuthStore } from "@/stores/useAuthStore";
 import { useMutation } from "@tanstack/react-query";
 
 export const useRefreshTokenMutation = () => {
@@ -21,7 +26,6 @@ export const useRefreshTokenMutation = () => {
           credentials: "include", // Gửi cookie tự động (chứa refreshToken)
         }
       );
-      console.log("🚀 ~ mutationFn: ~ response:", response);
 
       if (!response.ok) {
         throw response;
@@ -31,21 +35,16 @@ export const useRefreshTokenMutation = () => {
   });
 };
 export const useLoginMutation = () => {
-  return useMutation({
-    // mutationFn: async (data) => {
-    //   const response = await fetch("/api/auth/login", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(data),
-    //   });
-    //   if (!response.ok) {
-    //     throw response;
-    //   }
-    //   return response.json(); //
-    // },
-    mutationFn: authApiRequest.cLogin,
+  const setIsAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
+
+  return useMutation<ResponseData<LoginResType>, Error, LoginBodyType>({
+    mutationFn: async (data) => {
+      const res = await authApiRequest.cLogin(data);
+      if (res.code === 200 && res?.data?.data?.accessToken) {
+        setIsAuthenticated(true);
+      }
+      return res;
+    },
   });
 };
 
