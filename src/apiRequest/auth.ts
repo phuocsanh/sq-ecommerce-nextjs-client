@@ -21,7 +21,7 @@ const authApiRequest = {
     });
   },
   registerEmail: (body: RegisterEmailType) => {
-    return http.post<ResponseData<null>>("api/v1/user/register", body);
+    return http.post<ResponseData<null>>("v1/api/shop/register-email", body);
   },
   verifyOTP: (body: RegisterVerifyOTPType) => {
     return http.post<ResponseData<VerifyOTPType>>(

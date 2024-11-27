@@ -6,12 +6,7 @@ export const RegisterVerifyOTP = z.object({
 });
 
 export const RegisterEmail = z.object({
-  verify_key: z
-    .string()
-    .min(1, "Email là bắt buộc")
-    .email("Email sai định dạng"),
-  verify_purpose: z.string(),
-  verify_type: z.number(),
+  email: z.string().min(1, "Email là bắt buộc").email("Email sai định dạng"),
 });
 
 export const RegisterPassword = z

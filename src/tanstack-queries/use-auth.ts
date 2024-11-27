@@ -6,11 +6,9 @@ import {
 } from "@/models/auth";
 import { ResponseData } from "@/models/common";
 import {
-  LoginBodyType,
-  LoginResType,
+  RegisterEmailType,
   RegisterVerifyOTPType,
 } from "@/schemaValidations/auth.schema";
-import { useAuthStore } from "@/stores/useAuthStore";
 import { useMutation } from "@tanstack/react-query";
 
 export const useRefreshTokenMutation = () => {
@@ -86,11 +84,7 @@ export const useVerifyOTPMutation = () => {
 };
 
 export const useRegisterEmailMutation = () => {
-  return useMutation<
-    ResponseData<null>,
-    Error,
-    { verify_key: string; verify_purpose: string; verify_type: number }
-  >({
+  return useMutation<ResponseData<null>, Error, RegisterEmailType>({
     mutationFn: async (data) => {
       const response = await fetch("/api/auth/register/email", {
         method: "POST",

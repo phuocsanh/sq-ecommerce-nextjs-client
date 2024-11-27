@@ -51,9 +51,7 @@ const RegisterForm = () => {
   const form = useForm<RegisterEmailType>({
     resolver: zodResolver(RegisterEmail),
     defaultValues: {
-      verify_key: "",
-      verify_purpose: "TEST_USER",
-      verify_type: 1,
+      email: "",
     },
   });
 
@@ -62,12 +60,11 @@ const RegisterForm = () => {
     try {
       if (registerEmailMutation.isPending) return;
       const result = await registerEmailMutation.mutateAsync({
-        verify_key: values.verify_key || "",
-        verify_purpose: values.verify_purpose,
-        verify_type: values.verify_type,
+        email: values.email || "",
       });
+      console.log("🚀 ~ onSubmitEmail ~ result:", result);
       if (API_CODE.SUCCESS === result.code) {
-        setEmail(values.verify_key);
+        setEmail(values.email);
         setStep(1);
       } else {
         handleErrorApi({
@@ -81,61 +78,47 @@ const RegisterForm = () => {
     }
   }
   return (
-    <section className="bg-white w-96 lg:h-96 h-72 flex items-center px-10 rounded-sm">
-      <article className="w-full">
-        {!step ? (
-          <div>
-            <header>
-              <h1 className="text-center font-bold text-lg mb-5">Email</h1>
-            </header>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmitEmail)}
-                className="space-y-2 max-w-[600px] flex-shrink-0 w-full"
-                noValidate
-              >
-                <FormField
-                  control={form.control}
-                  name="verify_key"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          id="verify_key"
-                          placeholder="Nhập email"
-                          type="email"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage className="text-red-600 font-light" />
-                    </FormItem>
-                  )}
-                />
-                <footer>
-                  <Button type="submit" className="!mt-8 w-full text-white">
-                    {registerEmailMutation.isPending ? (
-                      <LoadingSpinner />
-                    ) : (
-                      <>Tiếp theo</>
-                    )}
-                  </Button>
-                </footer>
-              </form>
-            </Form>
-          </div>
-        ) : step === 1 ? (
-          <InputOTPPattern
-            setStep={setStep}
-            email={email}
-            setToken={setToken}
-          />
-        ) : step === 2 ? (
-          <CreatePass setStep={setStep} token={token} />
-        ) : (
-          <SuccessRegister />
-        )}
-      </article>
-    </section>
+    <>
+      {!step ? (
+        <div>
+          <h1 className="text-center font-bold text-lg mb-5">Email</h1>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmitEmail)}
+              className="space-y-2 max-w-[600px] flex-shrink-0 w-full"
+              noValidate
+            >
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input placeholder="Nhập email" type="email" {...field} />
+                    </FormControl>
+                    <FormMessage className="text-red-600 font-light" />
+                  </FormItem>
+                )}
+              />
+
+              <Button type="submit" className="!mt-8 w-full text-white">
+                {registerEmailMutation.isPending ? (
+                  <LoadingSpinner />
+                ) : (
+                  <>Tiếp theo</>
+                )}
+              </Button>
+            </form>
+          </Form>
+        </div>
+      ) : step === 1 ? (
+        <InputOTPPattern setStep={setStep} email={email} setToken={setToken} />
+      ) : step === 2 ? (
+        <CreatePass setStep={setStep} token={token} />
+      ) : (
+        <SuccessRegister />
+      )}
+    </>
   );
 };
 

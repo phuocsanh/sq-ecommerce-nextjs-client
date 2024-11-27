@@ -5,8 +5,8 @@ enum Role {
 export const RoleValues = [Role.ADMIN, Role.CUSTOMMER] as const;
 
 export enum API_CODE {
-  SUCCESS = 20001,
-  FAILURE = 40000,
+  SUCCESS = 201,
+  FAILURE = 400,
 }
 export type ApiResponse = {
   code: number;
