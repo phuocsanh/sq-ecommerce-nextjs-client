@@ -9,6 +9,7 @@ import {
   RegisterEmailType,
   RegisterVerifyOTPType,
 } from "@/schemaValidations/auth.schema";
+import { useAuthStore } from "@/stores/useAuthStore";
 import { useMutation } from "@tanstack/react-query";
 
 export const useRefreshTokenMutation = () => {
