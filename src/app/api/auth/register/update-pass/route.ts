@@ -20,7 +20,7 @@ export async function POST(request: Request) {
           code: e.code,
           data: e.data,
         },
-        { status: e.code }
+        { status: e.code, statusText: e.message }
       );
     }
 
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
         code: 500,
         data: null,
       },
-      { status: 500 }
+      { status: 500, statusText: "An unexpected error occurred" }
     );
   }
 }

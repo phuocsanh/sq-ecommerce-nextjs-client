@@ -7,20 +7,23 @@ export async function POST(request: Request) {
   const body = (await request.json()) as RegisterEmailType;
   try {
     const res = await authApiRequest.registerEmail(body);
+    console.log("🚀 ~ POST ~ res:", res);
 
     return Response.json(res);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
     // Kiểm tra lỗi kiểu HttpError
     if (e instanceof HttpError) {
-      return NextResponse.json(
+      let a = NextResponse.json(
         {
-          message: `HTTP Error: ${e.message}`,
+          message: `${e.message}`,
           code: e.code,
           data: e.data,
         },
-        { status: e.code }
+        { status: e.code, statusText: e.message }
       );
+      console.log("🚀 ~ POST ~ a:", a);
+      return a;
     }
 
     // Trường hợp lỗi khác
@@ -30,7 +33,7 @@ export async function POST(request: Request) {
         code: 500,
         data: null,
       },
-      { status: 500 }
+      { status: 500, statusText: "An unexpected error occurred" }
     );
   }
 }

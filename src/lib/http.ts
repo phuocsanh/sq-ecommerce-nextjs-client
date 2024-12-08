@@ -189,10 +189,14 @@ const request = async <Response>(
         }
       }
     } else {
+      let data;
+      try {
+        data = await res.json();
+      } catch (error) {}
       throw new HttpError({
         code: res.status,
         data: null,
-        message: res.statusText,
+        message: data?.message || res.statusText,
       });
     }
   }

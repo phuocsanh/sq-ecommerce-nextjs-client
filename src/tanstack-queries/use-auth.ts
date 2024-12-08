@@ -6,6 +6,8 @@ import {
 } from "@/models/auth";
 import { ResponseData } from "@/models/common";
 import {
+  LoginBodyType,
+  LoginResType,
   RegisterEmailType,
   RegisterVerifyOTPType,
 } from "@/schemaValidations/auth.schema";
@@ -34,13 +36,11 @@ export const useRefreshTokenMutation = () => {
   });
 };
 export const useLoginMutation = () => {
-  const setIsAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
-
   return useMutation<ResponseData<LoginResType>, Error, LoginBodyType>({
     mutationFn: async (data) => {
       const res = await authApiRequest.cLogin(data);
-      if (res.code === 200 && res?.data?.data?.accessToken) {
-        setIsAuthenticated(true);
+      if (res.code === 200 && res?.data?.tokens.accessToken) {
+        localStorage.setItem("isLogin", "1");
       }
       return res;
     },

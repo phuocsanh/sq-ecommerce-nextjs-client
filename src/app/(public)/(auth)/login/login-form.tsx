@@ -15,14 +15,15 @@ import { Input } from "@/components/ui/input";
 import { LoginBody, LoginBodyType } from "@/schemaValidations/auth.schema";
 import { handleErrorApi, isServerResponseError } from "@/lib/utils";
 import { useLoginMutation } from "@/tanstack-queries/use-auth";
-import LoadingSpinner from "@/app/components/LoadingSpinner/LoadingSpinner";
-import { API_CODE } from "@/models/common";
+import Btn from "@/app/components/Btn";
+import { useRouter } from "next/navigation";
 const LoginForm = () => {
+  const router = useRouter();
   const form = useForm<LoginBodyType>({
     resolver: zodResolver(LoginBody),
     defaultValues: {
-      user_password: "",
-      user_account: "",
+      password: "",
+      email: "",
     },
   });
 
@@ -30,11 +31,11 @@ const LoginForm = () => {
 
   async function onSubmit(values: LoginBodyType) {
     const res = await loginMutation.mutateAsync({
-      user_account: values.user_account,
-      user_password: values.user_password,
+      email: values.email,
+      password: values.password,
     });
-    console.log("🚀 ~ onSubmit ~ res:", res);
-    if (res.data?.accessToken) {
+    if (res.data?.tokens.accessToken) {
+      router.push("/");
     }
     try {
     } catch (error) {
@@ -58,13 +59,13 @@ const LoginForm = () => {
           >
             <FormField
               control={form.control}
-              name="user_account"
+              name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel htmlFor="user_account">Email</FormLabel>
+                  <FormLabel htmlFor="email">Email</FormLabel>
                   <FormControl>
                     <Input
-                      id="user_account"
+                      id="email"
                       placeholder="Nhập email của bạn"
                       type="email"
                       {...field}
@@ -76,13 +77,13 @@ const LoginForm = () => {
             />
             <FormField
               control={form.control}
-              name="user_password"
+              name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel htmlFor="user_password">Mật khẩu</FormLabel>
+                  <FormLabel htmlFor="password">Mật khẩu</FormLabel>
                   <FormControl>
                     <Input
-                      id="user_password"
+                      id="password"
                       placeholder="Nhập mật khẩu"
                       type="password"
                       {...field}
@@ -92,9 +93,12 @@ const LoginForm = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="!mt-8 w-full text-white">
-              Xác nhận
-            </Button>
+            <Btn
+              title="Xác nhận"
+              type="submit"
+              isLoading={loginMutation.isPending}
+              disabled={loginMutation.isPending}
+            />
           </form>
         </Form>
       </article>

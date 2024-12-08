@@ -9,9 +9,8 @@ export async function POST(request: Request) {
   const cookieStore = cookies();
   try {
     const res = await authApiRequest.sLogin(body);
-    if (res.data?.accessToken && res.data?.refreshToken) {
-      const { accessToken, refreshToken } = res.data;
-      console.log("🚀 ~ POST ~ accessToken login: 14", accessToken);
+    if (res.data?.tokens.accessToken && res.data?.tokens.refreshToken) {
+      const { accessToken, refreshToken } = res.data.tokens;
       const decodeAccessToken = jwt.decode(accessToken) as { exp: number };
       const decodeRefreshToken = jwt.decode(refreshToken) as { exp: number };
       cookieStore.set("accessToken", accessToken, {
@@ -35,11 +34,11 @@ export async function POST(request: Request) {
     if (e instanceof HttpError) {
       return NextResponse.json(
         {
-          message: `HTTP Error: ${e.message}`,
+          message: ` ${e.message}`,
           code: e.code,
           data: e.data,
         },
-        { status: e.code }
+        { status: e.code, statusText: e.message }
       );
     }
 
@@ -50,7 +49,7 @@ export async function POST(request: Request) {
         code: 500,
         data: null,
       },
-      { status: 500 }
+      { status: 500, statusText: "An unexpected error occurred" }
     );
   }
 }

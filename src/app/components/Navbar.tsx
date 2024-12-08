@@ -20,9 +20,13 @@ import { IoMdHome } from "react-icons/io";
 import { useAuthStore } from "@/stores/useAuthStore";
 export default function Navbar() {
   const pathname = usePathname();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  console.log("🚀 ~ Navbar ~ isAuthenticated:", isAuthenticated);
+  const [isAuthenticated, setIsAuthenticated] = useState<string | null>(null);
 
+  useEffect(() => {
+    // Chỉ thực hiện trên client
+    const isLogin = localStorage.getItem("isLogin");
+    setIsAuthenticated(isLogin);
+  }, []);
   // Đảm bảo đã gắn DOM trước khi sử dụng useTheme
 
   return (
@@ -55,7 +59,7 @@ export default function Navbar() {
         )}
 
         {/* Menu responsive */}
-        {isAuthenticated ? (
+        {isAuthenticated === "0" ? (
           <div className="flex items-center space-x-2 sm:space-x-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

@@ -14,24 +14,24 @@ import {
 
 const authApiRequest = {
   sLogin: (body: LoginBodyType) =>
-    http.post<ResponseData<LoginResType>>("api/v1/user/login", body),
+    http.post<ResponseData<LoginResType>>("v1/api/user/login", body),
   cLogin: (body: LoginBodyType) => {
     return http.post<ResponseData<LoginResType>>("/api/auth/login", body, {
       baseUrl: "",
     });
   },
   registerEmail: (body: RegisterEmailType) => {
-    return http.post<ResponseData<null>>("v1/api/shop/register-email", body);
+    return http.post<ResponseData<null>>("v1/api/user/register-email", body);
   },
   verifyOTP: (body: RegisterVerifyOTPType) => {
     return http.post<ResponseData<VerifyOTPType>>(
-      "api/v1/user/verify_account",
+      "v1/api/user/verify-otp",
       body
     );
   },
   updatePassRegister: (body: UpdatePassBodyType) => {
     return http.post<ResponseData<UpdatePassType>>(
-      "api/v1/user/update_pass_register",
+      "v1/api/user/update_pass_register",
       body
     );
   },

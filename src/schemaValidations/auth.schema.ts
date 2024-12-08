@@ -50,21 +50,24 @@ export type RegisterResType = z.TypeOf<typeof RegisterRes>;
 
 export const LoginBody = z
   .object({
-    user_account: z.string().email(),
-    user_password: z.string().min(6).max(100),
+    email: z.string().email("Email không đúng định dạng"),
+    password: z.string().min(6, "Tối thiểu 6 kí tự").max(20, "Tối đa 20 kí tự"),
   })
   .strict();
 
 export type LoginBodyType = z.TypeOf<typeof LoginBody>;
 
-export const LoginRes = RegisterRes.extend({
-  data: RegisterRes.shape.data.omit({ token: true }).extend({
-    accessToken: z.string(),
-    refreshToken: z.string(),
-  }),
-});
-
-export type LoginResType = z.TypeOf<typeof LoginRes>;
+export type LoginResType = {
+  user: {
+    _id: string;
+    email: string;
+    name: string;
+  };
+  tokens: {
+    accessToken: string;
+    refreshToken: string;
+  };
+};
 
 export const SlideSessionBody = z.object({}).strict();
 

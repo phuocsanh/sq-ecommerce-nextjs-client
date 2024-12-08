@@ -38,8 +38,9 @@ import {
   useUpdatePassRegisterMutation,
   useVerifyOTPMutation,
 } from "@/tanstack-queries/use-auth";
-import LoadingSpinner from "@/app/components/LoadingSpinner/LoadingSpinner";
+import LoadingSpinner from "@/app/components/LoadingSpinner";
 import { API_CODE } from "@/models/common";
+import Btn from "@/app/components/Btn";
 type Steps = 1 | 2 | 3 | undefined;
 
 const RegisterForm = () => {
@@ -62,7 +63,6 @@ const RegisterForm = () => {
       const result = await registerEmailMutation.mutateAsync({
         email: values.email || "",
       });
-      console.log("🚀 ~ onSubmitEmail ~ result:", result);
       if (API_CODE.SUCCESS === result.code) {
         setEmail(values.email);
         setStep(1);
@@ -80,37 +80,42 @@ const RegisterForm = () => {
   return (
     <>
       {!step ? (
-        <div>
-          <h1 className="text-center font-bold text-lg mb-5">Email</h1>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmitEmail)}
-              className="space-y-2 max-w-[600px] flex-shrink-0 w-full"
-              noValidate
-            >
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input placeholder="Nhập email" type="email" {...field} />
-                    </FormControl>
-                    <FormMessage className="text-red-600 font-light" />
-                  </FormItem>
-                )}
-              />
+        <section className="bg-white w-96 h-96 flex items-center px-10 rounded-sm">
+          <article className="w-full">
+            <h1 className="text-center font-bold text-lg mb-5">Email</h1>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmitEmail)}
+                className="space-y-2 max-w-[600px] flex-shrink-0 w-full"
+                noValidate
+              >
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          placeholder="Nhập email"
+                          type="email"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-600 font-light" />
+                    </FormItem>
+                  )}
+                />
 
-              <Button type="submit" className="!mt-8 w-full text-white">
-                {registerEmailMutation.isPending ? (
-                  <LoadingSpinner />
-                ) : (
-                  <>Tiếp theo</>
-                )}
-              </Button>
-            </form>
-          </Form>
-        </div>
+                <Btn
+                  title="Tiếp theo"
+                  type="submit"
+                  isLoading={registerEmailMutation.isPending}
+                  disabled={registerEmailMutation.isPending}
+                />
+              </form>
+            </Form>
+          </article>
+        </section>
       ) : step === 1 ? (
         <InputOTPPattern setStep={setStep} email={email} setToken={setToken} />
       ) : step === 2 ? (
@@ -147,7 +152,6 @@ function InputOTPPattern({
         verify_code: values.verify_code,
         verify_key: values.verify_key,
       });
-      console.log("🚀 ~ onSubmitOTP ~ result:", result);
 
       if (API_CODE.SUCCESS === result.code && result.data.token) {
         setToken(result.data.token);
@@ -165,59 +169,61 @@ function InputOTPPattern({
     }
   }
   return (
-    <Form {...form}>
-      <div className="flex flex-col items-center">
-        <button className="self-start" onClick={() => setStep(undefined)}>
-          <MdArrowBack size={25} />
-        </button>
-        <p className="text-lg text-center font-bold">Nhập mã xác thực</p>
-        <p className="text-center">Mã xác thực sẽ được gửi qua email</p>
-        <div className="mt-8">
-          <form onSubmit={form.handleSubmit(onSubmitOTP)}>
-            <FormField
-              control={form.control}
-              name="verify_code"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <InputOTP
-                      maxLength={6}
-                      {...field}
-                      pattern={REGEXP_ONLY_DIGITS}
-                    >
-                      <InputOTPGroup>
-                        <InputOTPSlot index={0} />
-                        <InputOTPSlot index={1} />
-                        <InputOTPSlot index={2} />
-                        <InputOTPSlot index={3} />
-                        <InputOTPSlot index={4} />
-                        <InputOTPSlot index={5} />
-                      </InputOTPGroup>
-                    </InputOTP>
-                  </FormControl>
+    <section className="bg-white w-96 h-96 flex items-center px-10 rounded-sm">
+      <article className="w-full">
+        <Form {...form}>
+          <div className="flex flex-col items-center">
+            <button className="self-start" onClick={() => setStep(undefined)}>
+              <MdArrowBack size={25} />
+            </button>
+            <p className="text-lg text-center font-bold">Nhập mã xác thực</p>
+            <p className="text-center">Mã xác thực sẽ được gửi qua email</p>
+            <div className="mt-8">
+              <form onSubmit={form.handleSubmit(onSubmitOTP)}>
+                <FormField
+                  control={form.control}
+                  name="verify_code"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <InputOTP
+                          maxLength={6}
+                          {...field}
+                          pattern={REGEXP_ONLY_DIGITS}
+                        >
+                          <InputOTPGroup>
+                            <InputOTPSlot index={0} />
+                            <InputOTPSlot index={1} />
+                            <InputOTPSlot index={2} />
+                            <InputOTPSlot index={3} />
+                            <InputOTPSlot index={4} />
+                            <InputOTPSlot index={5} />
+                          </InputOTPGroup>
+                        </InputOTP>
+                      </FormControl>
 
-                  <FormMessage className="text-red-600 font-light" />
-                </FormItem>
-              )}
-            />
-            <p className="text-center mt-6">
-              Bạn vẫn chưa nhận được?{" "}
-              <button onClick={() => {}}>
-                <p className="text-cyan-500">Gửi lại</p>
-              </button>
-            </p>
-
-            <Button type="submit" className="!mt-8 w-full text-white">
-              {verifyOTPMutation.isPending ? (
-                <LoadingSpinner />
-              ) : (
-                <>Tiếp theo</>
-              )}
-            </Button>
-          </form>
-        </div>
-      </div>
-    </Form>
+                      <FormMessage className="text-red-600 font-light" />
+                    </FormItem>
+                  )}
+                />
+                <p className="text-center mt-6">
+                  Bạn vẫn chưa nhận được?{" "}
+                  <button onClick={() => {}}>
+                    <p className="text-cyan-500">Gửi lại</p>
+                  </button>
+                </p>
+                <Btn
+                  title="Tiếp theo"
+                  type="submit"
+                  isLoading={verifyOTPMutation.isPending}
+                  disabled={verifyOTPMutation.isPending}
+                />
+              </form>
+            </div>
+          </div>
+        </Form>
+      </article>
+    </section>
   );
 }
 
@@ -259,83 +265,91 @@ function CreatePass({
     }
   }
   return (
-    <div>
-      <p className="text-lg text-center font-bold">Tạo mật khẩu</p>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-2 max-w-[600px] flex-shrink-0 w-full"
-          noValidate
-        >
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Mật khẩu</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Nhập mật khẩu"
-                    type="password"
-                    {...field}
+    <section className="bg-white w-96 h-96 flex items-center px-10 rounded-sm">
+      <article className="w-full">
+        <p className="text-lg text-center font-bold">Tạo mật khẩu</p>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-2 max-w-[600px] flex-shrink-0 w-full"
+            noValidate
+          >
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Mật khẩu</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Nhập mật khẩu"
+                      type="password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage
+                    content={form.formState.errors.confirmPassword?.message}
+                    className="text-red-600 font-light"
                   />
-                </FormControl>
-                <FormMessage
-                  content={form.formState.errors.confirmPassword?.message}
-                  className="text-red-600 font-light"
-                />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="confirmPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nhập lại mật khẩu</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Nhập lại mật khẩu"
-                    type="password"
-                    {...field}
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nhập lại mật khẩu</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Nhập lại mật khẩu"
+                      type="password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage
+                    content={form.formState.errors.confirmPassword?.message}
+                    className="text-red-600 font-light"
                   />
-                </FormControl>
-                <FormMessage
-                  content={form.formState.errors.confirmPassword?.message}
-                  className="text-red-600 font-light"
-                />
-              </FormItem>
-            )}
-          />
-          <Button type="submit" className="!mt-8 w-full text-white">
-            Xác nhận
-          </Button>
-        </form>
-      </Form>
-    </div>
+                </FormItem>
+              )}
+            />
+
+            <Btn
+              title="Xác nhận"
+              type="submit"
+              isLoading={updatePassRegisterMutation.isPending}
+              disabled={updatePassRegisterMutation.isPending}
+            />
+          </form>
+        </Form>
+      </article>
+    </section>
   );
 }
 
 function SuccessRegister() {
   return (
-    <div className="w-full h-full flex flex-col justify-center">
-      <Player
-        autoplay
-        loop
-        src="/assets/Success.json"
-        style={{ height: "70%", width: "50%" }}
-      >
-        {/* <Controls visible={true} buttons={["repeat"]} /> */}
-      </Player>
-      <p className="mt-5 font-light text-center">
-        Chúc mừng bạn đã đăng kí tài khoản thành công!
-      </p>
-      <Link className="w-full" href={"/login"}>
-        <Button className="mt-10 w-full text-white cursor-pointer ">
-          Go to Login
-        </Button>
-      </Link>
-    </div>
+    <section className="bg-white w-96 h-96 flex items-center px-10 rounded-sm">
+      <article className="w-full">
+        <Player
+          autoplay
+          loop
+          src="/assets/Success.json"
+          style={{ height: "70%", width: "50%" }}
+        >
+          {/* <Controls visible={true} buttons={["repeat"]} /> */}
+        </Player>
+        <p className="mt-5 font-light text-center">
+          Chúc mừng bạn đã đăng kí tài khoản thành công!
+        </p>
+        <Link className="w-full" href={"/login"}>
+          <Button className="mt-10 w-full text-white cursor-pointer ">
+            Đến trang đăng nhập
+          </Button>
+        </Link>
+      </article>
+    </section>
   );
 }
 
