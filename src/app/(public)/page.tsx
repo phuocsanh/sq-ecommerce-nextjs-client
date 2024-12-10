@@ -11,12 +11,12 @@ async function Page({ searchParams }: { searchParams: { category?: string } }) {
   const categories = await categoryApiRequest.getAllCategories();
   const data = await productApiRequest.findAllOrTypePublishProduct({
     category: category || "",
-    limit: 10,
+    limit: 30,
     page: 1,
   });
   console.log("🚀 ~ Page ~ initialProducts:", data);
   return (
-    <div className="bg-bg_cyan pt-6">
+    <div className=" pt-20 mb-20">
       {categories.data && <Categories categories={categories.data} />}
       <ListProduct data={data} />
     </div>

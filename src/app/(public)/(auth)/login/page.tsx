@@ -5,7 +5,7 @@ import { lazy } from "react";
 const Footer = lazy(() => import("@/app/components/Footer"));
 export default function Login() {
   return (
-    <div className="h-[calc(100vh-60px)] w-full flex flex-col">
+    <div className="h-[calc(100vh-60px)] w-full flex flex-col mt-20">
       {/* Header Section */}
       <header className="bg-primary w-full flex flex-col lg:mt-10 lg:flex-row">
         {/* Left Content */}
@@ -30,11 +30,6 @@ export default function Login() {
           <LoginForm />
         </main>
       </header>
-
-      {/* Footer Section */}
-      <footer>
-        <Footer />
-      </footer>
     </div>
   );
 }

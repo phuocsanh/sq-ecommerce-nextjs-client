@@ -30,7 +30,7 @@ export default function Navbar() {
   // Đảm bảo đã gắn DOM trước khi sử dụng useTheme
 
   return (
-    <nav className="bg-primary dark:bg-gray-900 shadow-lg">
+    <nav className="bg-primary dark:bg-gray-900 shadow-lg fixed top-0 left-0 w-full z-50">
       <div className="container mx-auto px-2 sm:px-4 py-2 flex justify-between items-center">
         {/* Logo và Trang chủ */}
         <div className="flex items-center space-x-2">

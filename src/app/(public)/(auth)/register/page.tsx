@@ -4,7 +4,7 @@ import { lazy } from "react";
 const Footer = lazy(() => import("@/app/components/Footer"));
 export default function Register() {
   return (
-    <div className="h-[calc(100vh-60px)] w-full flex flex-col">
+    <div className="h-[calc(100vh-60px)] w-full flex flex-col mt-20">
       {/* Header Section */}
       <header className="bg-primary w-full flex flex-col lg:mt-10 lg:flex-row">
         {/* Left Content */}
@@ -25,15 +25,10 @@ export default function Register() {
         </aside>
 
         {/* Right Content */}
-        <main className="w-full lg:w-[40%] flex items-center justify-center bg-white lg:bg-transparent px-6 py-10">
+        <main className="w-full lg:w-[40%] flex items-center justify-center bg-white lg:bg-transparent px-6  py-10">
           <RegisterForm />
         </main>
       </header>
-
-      {/* Footer Section */}
-      <footer>
-        <Footer />
-      </footer>
     </div>
   );
 }

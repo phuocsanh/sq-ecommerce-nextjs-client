@@ -5,6 +5,13 @@ import { EntityError } from "./http";
 import { toast } from "@/hooks/use-toast";
 import { ApiResponseError } from "@/models/common";
 
+export const convertCurrency = (data: number) => {
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(data || 0);
+};
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
