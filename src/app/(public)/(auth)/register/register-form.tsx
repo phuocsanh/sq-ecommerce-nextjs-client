@@ -38,7 +38,6 @@ import {
   useUpdatePassRegisterMutation,
   useVerifyOTPMutation,
 } from "@/tanstack-queries/use-auth";
-import LoadingSpinner from "@/app/components/LoadingSpinner";
 import { API_CODE } from "@/models/common";
 import Btn from "@/app/components/Btn";
 type Steps = 1 | 2 | 3 | undefined;
@@ -162,7 +161,7 @@ function InputOTPPattern({
           setError: form.setError,
         });
       }
-    } catch (error: any) {
+    } catch (error) {
       handleErrorApi({
         error: isServerResponseError(error) ? error.statusText : null,
       });

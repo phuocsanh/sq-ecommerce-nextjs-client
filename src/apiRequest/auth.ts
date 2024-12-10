@@ -21,17 +21,17 @@ const authApiRequest = {
     });
   },
   registerEmail: (body: RegisterEmailType) => {
-    return http.post<ResponseData<null>>("v1/api/user/register-email", body);
+    return http.post<ResponseData<null>>("v1/api/user/registerEmail", body);
   },
   verifyOTP: (body: RegisterVerifyOTPType) => {
     return http.post<ResponseData<VerifyOTPType>>(
-      "v1/api/user/verify-otp",
+      "v1/api/user/verifyOtp",
       body
     );
   },
   updatePassRegister: (body: UpdatePassBodyType) => {
     return http.post<ResponseData<UpdatePassType>>(
-      "v1/api/user/update_pass_register",
+      "v1/api/user/updatePassRegister",
       body
     );
   },
