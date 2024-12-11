@@ -14,26 +14,33 @@ function Categories({ categories }: { categories: CategoryItem[] }) {
 
   return (
     <Block>
-      <section className="flex flex-row  py-7 self-center justify-center items-center">
-        {categories.length > 0 &&
-          categories.map((category) => (
-            <div
-              onClick={() => {
-                handleCategoryClick(category.category_name);
-              }}
-              key={category._id}
-              className=" mx-5 flex flex-col items-center cursor-pointer"
-            >
-              <div className="w-24 h-24 rounded-full overflow-hidden shadow-sm">
-                <Img
+      <section className=" py-2 md:py-4 lg:py-7  w-full items-center ">
+        {/* Container cuộn ngang trên mobile */}
+        <div className="overflow-x-auto sm:overflow-visible w-full">
+          <div className="flex space-x-5 justify-center ">
+            {categories.length > 0 &&
+              categories.map((category) => (
+                <div
+                  onClick={() => {
+                    handleCategoryClick(category.category_name);
+                  }}
                   key={category._id}
-                  src={category.category_picture}
-                  alt={`category${category._id}.png`}
-                />
-              </div>
-              <p className="mt-2">{category.category_title}</p>
-            </div>
-          ))}
+                  className="flex flex-col items-center cursor-pointer transition-transform duration-300 transform hover:scale-105"
+                >
+                  <div className="w-24 h-24 sm:w-12 sm:h-12 md:w-20 md:h-20  rounded-full overflow-hidden shadow-sm">
+                    <Img
+                      key={category._id}
+                      src={category.category_picture}
+                      alt={`category${category._id}.png`}
+                    />
+                  </div>
+                  <p className="mt-2 text-center text-sm">
+                    {category.category_title}
+                  </p>
+                </div>
+              ))}
+          </div>
+        </div>
       </section>
     </Block>
   );

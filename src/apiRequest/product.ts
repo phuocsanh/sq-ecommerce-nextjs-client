@@ -1,19 +1,19 @@
 import http from "@/lib/http";
-import { CategoryItem } from "@/models/category";
-import { ResponseData } from "@/models/common";
+import { PagingResponseData } from "@/models/common";
+import { ProductItem } from "@/models/product";
 
 const productApiRequest = {
   findAllOrTypePublishProduct: ({
-    category,
+    product_type,
     page,
     limit,
   }: {
-    category: string;
+    product_type: string;
     page: number;
     limit: number;
   }) => {
-    return http.get<ResponseData<CategoryItem[]>>(
-      `v1/api/product/findAllOrTypePublishProduct?category=${category}&page=${page}&limit=${limit}`
+    return http.get<PagingResponseData<ProductItem>>(
+      `v1/api/product/findAllOrTypePublishProduct?product_type=${product_type}&page=${page}&limit=${limit}`
     );
   },
 };

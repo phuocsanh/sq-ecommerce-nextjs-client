@@ -3,7 +3,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -17,17 +16,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { IoMdHome } from "react-icons/io";
-import { useAuthStore } from "@/stores/useAuthStore";
+import { useAppStore } from "@/stores";
+import { useEffect, useRef, useState } from "react";
+import { Timeout } from "@/models/common";
 export default function Navbar() {
   const pathname = usePathname();
-  const [isAuthenticated, setIsAuthenticated] = useState<string | null>(null);
-
-  useEffect(() => {
-    // Chỉ thực hiện trên client
-    const isLogin = localStorage.getItem("isLogin");
-    setIsAuthenticated(isLogin);
-  }, []);
-  // Đảm bảo đã gắn DOM trước khi sử dụng useTheme
+  const isAuthenticated = useAppStore((state) => state.isLogin);
 
   return (
     <nav className="bg-primary dark:bg-gray-900 shadow-lg fixed top-0 left-0 w-full z-50">
@@ -59,7 +53,7 @@ export default function Navbar() {
         )}
 
         {/* Menu responsive */}
-        {isAuthenticated === "0" ? (
+        {isAuthenticated ? (
           <div className="flex items-center space-x-2 sm:space-x-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

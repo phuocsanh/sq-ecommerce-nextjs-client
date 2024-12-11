@@ -1,6 +1,6 @@
 import React from "react";
-import Image from "next/image";
 import { FaFacebook, FaInstagramSquare, FaLinkedin } from "react-icons/fa";
+import Img from "./Img";
 const listPaymentMethods = [
   { icon: "/assets/img_visa.png" },
   { icon: "/assets/img_mastercard.png" },
@@ -16,7 +16,7 @@ const listDeliveryMethods = [
 ];
 export default function Footer() {
   return (
-    <div className="bg-slate-50 w-full py-10 px-4 md:px-10">
+    <footer className="bg-slate-50 w-full py-10 px-4 md:px-10">
       <section className="w-full flex flex-wrap gap-8 justify-between">
         {/* Customer Service */}
         <div className="w-full md:w-[40%] lg:w-[20%]">
@@ -63,28 +63,22 @@ export default function Footer() {
           <h1 className="font-semibold">THANH TOÁN</h1>
           <div className="flex flex-row flex-wrap mt-2 gap-3">
             {listPaymentMethods.map((item, idx) => (
-              <div key={idx} className="bg-white rounded px-2 py-1 shadow-sm">
-                <Image
-                  width={50}
-                  height={22}
-                  objectFit="contain"
-                  alt="payment_method"
-                  src={item.icon}
-                />
+              <div
+                key={idx}
+                className="bg-white rounded px-2 py-1 shadow-sm w-[50px] h-[22px]"
+              >
+                <Img alt="payment_method.png" src={item.icon} />
               </div>
             ))}
           </div>
           <h1 className="font-semibold mt-4">ĐƠN VỊ VẬN CHUYỂN</h1>
           <div className="flex flex-row flex-wrap mt-2 gap-3">
             {listDeliveryMethods.map((item, idx) => (
-              <div key={idx} className="bg-white rounded px-2 py-1 shadow-sm">
-                <Image
-                  width={50}
-                  height={22}
-                  objectFit="contain"
-                  alt="delivery_method"
-                  src={item.icon}
-                />
+              <div
+                key={idx}
+                className="bg-white rounded px-2 py-1 shadow-sm w-[50px] h-[22px]"
+              >
+                <Img alt="delivery_method.png" src={item.icon} />
               </div>
             ))}
           </div>
@@ -116,6 +110,6 @@ export default function Footer() {
           ))}
         </div>
       </section>
-    </div>
+    </footer>
   );
 }

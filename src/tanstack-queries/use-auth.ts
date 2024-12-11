@@ -11,7 +11,7 @@ import {
   RegisterEmailType,
   RegisterVerifyOTPType,
 } from "@/schemaValidations/auth.schema";
-import { useAuthStore } from "@/stores/useAuthStore";
+import { useAppStore } from "@/stores";
 import { useMutation } from "@tanstack/react-query";
 
 export const useRefreshTokenMutation = () => {
@@ -40,7 +40,7 @@ export const useLoginMutation = () => {
     mutationFn: async (data) => {
       const res = await authApiRequest.cLogin(data);
       if (res.code === 200 && res?.data?.tokens.accessToken) {
-        localStorage.setItem("isLogin", "1");
+        useAppStore.setState({ isLogin: true });
       }
       return res;
     },
@@ -101,7 +101,7 @@ export const useRegisterEmailMutation = () => {
 
       return response.json(); // TypeScript sẽ hiểu kết quả trả về có kiểu RegisterEmailResponse
     },
-    onError: (error) => {
+    onError: () => {
       // Xử lý lỗi ở đây, ví dụ: hiển thị thông báo lỗi cho người dùng
     },
   });

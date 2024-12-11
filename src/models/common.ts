@@ -31,11 +31,14 @@ export type PagingParams<P = void> = P extends void
   : Paging & P;
 
 export type PagingResponseData<D> = ApiResponse & {
-  total_pages: number;
-  total: number;
-  per_page: number;
-  current_page: number;
-  data: D[];
-  //from:number;
-  //to:number;
+  data: {
+    currentPage: number;
+    totalPages: number;
+    total: number;
+    data: D[];
+  };
 };
+
+export type Timeout = ReturnType<typeof setTimeout>;
+
+export type Interval = ReturnType<typeof setInterval>;

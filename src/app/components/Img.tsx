@@ -16,6 +16,7 @@ export default function Img({
         alt={alt}
         src={src}
         fill
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         {...rest} // Truyền các thuộc tính khác
       />
     </div>

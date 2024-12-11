@@ -6,7 +6,7 @@ type CustomOptions = Omit<RequestInit, "method"> & {
   baseUrl?: string | undefined;
 };
 
-const ENTITY_ERROR_STATUS = 422;
+// const ENTITY_ERROR_STATUS = 422;
 const AUTHENTICATION_ERROR_STATUS = 401;
 
 type EntityErrorPayload = {
@@ -20,6 +20,7 @@ type EntityErrorPayload = {
 export class HttpError extends Error {
   code: number;
   data: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any;
   };
   message: string;
@@ -29,6 +30,7 @@ export class HttpError extends Error {
     message,
   }: {
     code: number;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: any;
     message: string;
   }) {
@@ -84,7 +86,6 @@ const request = async <Response>(
   if (isClient) {
     const response = await fetch("/api/auth/get-access-token", {
       method: "GET",
-      credentials: "include", // Gửi cookies tự động
     });
 
     if (response.ok) {
@@ -192,7 +193,9 @@ const request = async <Response>(
       let data;
       try {
         data = await res.json();
-      } catch (error) {}
+      } catch (error) {
+        throw error;
+      }
       throw new HttpError({
         code: res.status,
         data: null,

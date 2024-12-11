@@ -13,12 +13,10 @@ export default function AuthLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <Navbar></Navbar>
-      {children}
-      <footer>
-        <Footer />
-      </footer>
-    </>
+      <main className="flex-grow">{children}</main>
+      <Footer />
+    </div>
   );
 }

@@ -1,7 +1,5 @@
 import Image from "next/image";
 import RegisterForm from "./register-form";
-import { lazy } from "react";
-const Footer = lazy(() => import("@/app/components/Footer"));
 export default function Register() {
   return (
     <div className="h-[calc(100vh-60px)] w-full flex flex-col mt-20">

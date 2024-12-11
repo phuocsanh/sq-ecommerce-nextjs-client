@@ -1,8 +1,8 @@
-import { NextApiRequest } from "next";
+import { cookies } from "next/headers";
 
-export async function GET(req: NextApiRequest) {
-  const accessToken = req.cookies.accessToken;
-  console.log("🚀 ~ GET ~ accessToken:", accessToken);
+export async function GET() {
+  const cookieStore = cookies();
+  const accessToken = cookieStore.get("accessToken")?.value;
 
   if (!accessToken) {
     return Response.json({ accessToken: "" });

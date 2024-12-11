@@ -16,6 +16,7 @@ const Block: React.FC<BlockProps> = ({
       className={`block-container ${className}`}
       style={{
         maxWidth: `${maxWidth}px`,
+        width: "100%", // Đảm bảo chiếm hết chiều rộng trên các màn hình nhỏ
         margin: "0 auto", // Canh giữa nội dung
         padding: "0 16px", // Padding ngang
       }}
@@ -24,5 +25,4 @@ const Block: React.FC<BlockProps> = ({
     </div>
   );
 };
-
 export default Block;
